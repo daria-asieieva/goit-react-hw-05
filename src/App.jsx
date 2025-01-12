@@ -6,11 +6,11 @@ import { Puff } from "react-loader-spinner";
 import css from "./App.module.css";
 
 import HomePage from "./pages/HomePage/HomePage";
-// import MoviesPage from "./pages/MoviesPage/MoviesPage";
-// import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
-// import MovieDetailsPage from "./pages/MovieDetailsPage/MovieDetailsPage";
-// import MovieCast from "./components/MovieCast/MovieCast";
-// import MovieReviews from "./components/MovieReviews/MovieReviews";
+import MoviesPage from "./pages/MoviesPage/MoviesPage";
+import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
+import MovieDetailsPage from "./pages/MovieDetailsPage/MovieDetailsPage";
+import MovieCast from "./components/MovieCast/MovieCast";
+import MovieReviews from "./components/MovieReviews/MovieReviews";
 
 const MoviesPage = lazy(() => import("./pages/MoviesPage/MoviesPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"));
