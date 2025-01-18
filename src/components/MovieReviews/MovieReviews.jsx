@@ -1,44 +1,43 @@
-import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
-import { getReviewsMovie } from "../../api-query";
-import css from "./MovieReviews.module.css";
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { getMovieReviews } from '../../services/api';
 
 const MovieReviews = () => {
-  const { moviesId } = useParams();
-  const [reviewMovie, setReviewMovie] = useState([]);
+  const { movieId } = useParams();
+  const [reviews, setReviews] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    try {
-      const queryMovieReviews = async () => {
-        const {
-          data: { results },
-        } = await getReviewsMovie(moviesId);
-        setReviewMovie(results);
-      };
-      queryMovieReviews();
-    } catch (error) {
-      toast.error(error);
-    }
-  }, [moviesId]);
+    const fetchMovieReviews = async () => {
+      try {
+        const data = await getMovieReviews(movieId);
+        setReviews(data.results);
+        setError(null);
+      } catch (err) {
+        setError('Failed to fetch reviews. Please try again later.');
+      }
+    };
+
+    fetchMovieReviews();
+  }, [movieId]);
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
+  if (reviews.length === 0) {
+    return <p>No reviews available.</p>;
+  }
 
   return (
-    <div>
-      {reviewMovie.length ? (
-        <ul className={css["reviews-list"]}>
-          {reviewMovie.map((item, index) => (
-            <li key={index} className={css["reviews-item"]}>
-              <h3>
-                {index + 1}. User: {item.author}
-              </h3>
-              <p style={{ maxWidth: "95%" }}>{item.content}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className={css["no-reviews-err"]}>No information about reviews</p>
-      )}
-    </div>
+    <ul>
+      {reviews.map((review) => (
+        <li key={review.id}>
+          <h3>{review.author}</h3>
+          <p>{review.content}</p>
+        </li>
+      ))}
+    </ul>
   );
 };
 

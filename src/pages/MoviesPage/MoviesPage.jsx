@@ -1,58 +1,60 @@
-import { Formik, Form, Field } from "formik";
-import css from "./MoviesPage.module.css";
-import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
-import MovieList from "../../components/MovieList/MovieList";
-import { searchMovieOnKeyWord } from "../../api-query";
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import MovieList from '../../components/MovieList/MovieList';
+import { searchMovieOnKeyWord } from '../../services/api';
+import styles from './MoviesPage.module.css';
 
 const MoviesPage = () => {
-  const initialValues = {
-    movieQuery: "",
-  };
+  const [movies, setMovies] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [error, setError] = useState(null);
 
-  const [query, setQuery] = useState("");
-  const [dataMovie, setDataMovie] = useState([]);
-
-  const handleSubmit = (values) => {
-    if (!values.movieQuery) {
-      toast.error("Field is empty, please enter your query...");
-      return;
-    }
-    setQuery(values.movieQuery);
-  };
+  const query = searchParams.get('query') || '';
 
   useEffect(() => {
-    try {
-      const searchMovie = async () => {
-        if (!query) return;
-        const { data } = await searchMovieOnKeyWord(query);
+    if (!query) return;
 
-        setDataMovie(data.results);
-      };
+    const fetchMovies = async () => {
+      try {
+        const results = await searchMovieOnKeyWord(query);
+        setMovies(results);
+        setError(null);
+      } catch (err) {
+        setError('Failed to fetch movies. Please try again later.');
+      }
+    };
 
-      searchMovie();
-    } catch (error) {
-      toast.error(error);
-    }
+    fetchMovies();
   }, [query]);
 
-  return (
-    <div>
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        <Form className={css.form}>
-          <Field
-            className={css.field}
-            type="text"
-            name="movieQuery"
-            placeholder="Enter movie title"
-          />
-          <button className={css.subbtn} type="submit">
-            Search
-          </button>
-        </Form>
-      </Formik>
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const searchQuery = form.elements.query.value.trim();
 
-      <MovieList movies={dataMovie} query={query} />
+    if (searchQuery === '') return;
+
+    setSearchParams({ query: searchQuery });
+  };
+
+  return (
+    <div className={styles.container}>
+      <form onSubmit={handleSearch} className={styles.form}>
+        <input
+          type="text"
+          name="query"
+          defaultValue={query}
+          placeholder="Search movies..."
+          className={styles.input}
+        />
+        <button type="submit" className={styles.button}>
+          Search
+        </button>
+      </form>
+
+      {error && <p className={styles.error}>{error}</p>}
+
+      {movies.length > 0 && <MovieList movies={movies} />}
     </div>
   );
 };

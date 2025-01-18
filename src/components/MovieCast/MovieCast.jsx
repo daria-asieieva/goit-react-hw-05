@@ -1,47 +1,40 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { getCastMovie } from "../../api-query";
-import toast from "react-hot-toast";
-import css from "./MovieCast.module.css";
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { getCastMovie } from '../../services/api';
 
 const MovieCast = () => {
-  const { moviesId } = useParams();
-  const [castMovie, setCastMovie] = useState([]);
+  const { movieId } = useParams();
+  const [cast, setCast] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    try {
-      const queryMovieCast = async () => {
-        const {
-          data: { cast },
-        } = await getCastMovie(moviesId);
+    const fetchMovieCast = async () => {
+      try {
+        const data = await getCastMovie(movieId);
+        setCast(data.cast);
+        setError(null);
+      } catch (err) {
+        setError('Failed to fetch movie cast. Please try again later.');
+      }
+    };
 
-        setCastMovie(cast);
-      };
-      queryMovieCast();
-    } catch (error) {
-      toast.error(error);
-    }
-  }, [moviesId]);
+    fetchMovieCast();
+  }, [movieId]);
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
+  if (cast.length === 0) {
+    return <p>No cast information available.</p>;
+  }
 
   return (
-    <div>
-      {castMovie.length ? (
-        <ul className={css["actor-list"]}>
-          {castMovie.map((item, index) => (
-            <li key={index}>
-              <div className={css["actor-container"]}>
-                <p>
-                  <strong>Role:</strong> {item.character} -{" "}
-                  <strong>Actor:</strong> {item.name}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className={css["no-reviews-err"]}>No information about actors</p>
-      )}
-    </div>
+    <ul>
+      {cast.map((actor) => (
+        <li key={actor.id}>{actor.name}</li>
+      ))}
+    </ul>
   );
 };
 

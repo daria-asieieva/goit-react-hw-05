@@ -1,58 +1,24 @@
-import { Route, Routes, NavLink } from "react-router-dom";
-import clsx from "clsx";
-import { lazy, Suspense } from "react";
-import { Puff } from "react-loader-spinner";
+import React, { lazy, Suspense } from 'react';
+import { Routes, Route } from 'react-router-dom';
 
-import css from "./App.module.css";
-
-
-const HomePage = lazy(() => import("./pages/HomePage/HomePage"));
-const MoviesPage = lazy(() => import("./pages/MoviesPage/MoviesPage"));
-const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"));
+const HomePage = lazy(() => import('./pages/HomePage/HomePage'));
+const MoviesPage = lazy(() => import('./pages/MoviesPage/MoviesPage'));
 const MovieDetailsPage = lazy(() =>
-  import("./pages/MovieDetailsPage/MovieDetailsPage")
+  import('./pages/MovieDetailsPage/MovieDetailsPage')
 );
-const MovieCast = lazy(() => import("./components/MovieCast/MovieCast"));
-const MovieReviews = lazy(() => import("./components/MovieReviews/MovieReviews"));
 
-function App() {
-  const linkActiveStyle = ({ isActive }) => {
-    return clsx(css.link, isActive && css.active);
-  };
-
+const App = () => {
   return (
-    <div style={{ position: "relative" }}>
-      <Suspense
-        fallback={
-          <div className={css.fallback}>
-            <Puff color="#611f1f" />
-          </div>
-        }
-      >
-        <nav className={css.navigation}>
-          <NavLink to="/" className={linkActiveStyle}>
-            Home
-          </NavLink>
-          <NavLink to="/movies" className={linkActiveStyle}>
-            Movies
-          </NavLink>
-        </nav>
-
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-
-          <Route path="/movies" element={<MoviesPage />} />
-
-          <Route path="/movies/:moviesId" element={<MovieDetailsPage />}>
-            <Route path="cast" element={<MovieCast />} />
-            <Route path="reviews" element={<MovieReviews />} />
-          </Route>
-
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Suspense>
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/movies" element={<MoviesPage />} />
+        <Route path="/movies/:movieId" element={<MovieDetailsPage />} />
+        <Route path="*" element={<div>Page Not Found</div>} />
+      </Routes>
+    </Suspense>
   );
-}
+};
 
 export default App;
+

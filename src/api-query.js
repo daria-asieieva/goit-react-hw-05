@@ -50,3 +50,7 @@ export const searchMovieOnKeyWord = async (query) => {
 
   return data;
 };
+
+
+
+
