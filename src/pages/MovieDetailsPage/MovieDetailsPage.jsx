@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, Outlet } from 'react-router-dom';
-import { getInfMovie } from '../../services/api';
+import { getInfMovie } from "../../api-query";
 
 const MovieDetailsPage = () => {
   const { movieId } = useParams();

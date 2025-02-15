@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import MovieList from '../../components/MovieList/MovieList';
-import { searchMovieOnKeyWord } from '../../services/api';
+import { searchMovieOnKeyWord } from '../../api-query';
 import styles from './MoviesPage.module.css';
 
 const MoviesPage = () => {
