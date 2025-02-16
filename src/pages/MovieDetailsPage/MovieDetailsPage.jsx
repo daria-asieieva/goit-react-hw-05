@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, Outlet } from 'react-router-dom';
-import { getInfMovie } from "../../api-query";
+import { getInfMovie } from '../../api-query';
 
 const MovieDetailsPage = () => {
   const { movieId } = useParams();
@@ -19,6 +19,8 @@ const MovieDetailsPage = () => {
     };
 
     fetchMovieDetails();
+    
+    return () => {};
   }, [movieId]);
 
   if (error) {
@@ -32,9 +34,26 @@ const MovieDetailsPage = () => {
   return (
     <div>
       <h1>{movie.title}</h1>
+      {movie.poster_path && (
+        <img
+          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+          alt={movie.title}
+          width="300"
+        />
+      )}
       <p>{movie.overview}</p>
-      <Link to="cast">Cast</Link>
-      <Link to="reviews">Reviews</Link>
+
+      
+      <ul>
+        <li>
+          <Link to="cast">Cast</Link>
+        </li>
+        <li>
+          <Link to="reviews">Reviews</Link>
+        </li>
+      </ul>
+
+      
       <Outlet />
     </div>
   );
